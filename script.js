@@ -130,3 +130,4 @@ function checkWords() {
         alert("A palavra está incorreta. Tente novamente.");
     }
 }
+
