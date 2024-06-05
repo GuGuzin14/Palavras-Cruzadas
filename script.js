@@ -1,6 +1,8 @@
 const gridContainer = document.getElementById('gridContainer');
 const tableContainer = document.getElementById('table-container');
 const generateBtn = document.getElementById('generateButton');
+const buttonGenerateTip = document.getElementById('generateTip');
+const buttonTip = document.getElementById('addInputTip');
 const checkBtn = document.getElementById('checkButton'); // Assumindo que existe um botão para checar a palavra
 const rows = 10;
 const cols = 10;
@@ -22,6 +24,14 @@ for (let i = 0; i < rows; i++) {
         gridContainer.appendChild(gridItem);
     }
 }
+
+// buttonGenerateTip.addEventListener('click', () => {
+//     generateTip();
+// })
+
+buttonTip.addEventListener('click', () => {
+    addTip();
+})
 
 generateBtn.addEventListener('click', () => {
     generateCrossWords();
@@ -77,15 +87,37 @@ function generateCrossWords() {
     console.log("Array inicial das letras preenchidas:", initialArray);
 
     inputs.forEach((input) => {
-        if (input.value === '') {
+        const inputValue = input.value;
+        if (inputValue === '') {
             const row = input.closest('.row');
             input.remove();
             if (row) {
                 row.style.visibility = 'hidden';
             }
-        } else {
+        } else if (isNaN(inputValue)) {
             input.value = "";
         }
+       else {
+            input.readOnly = true; // Torna o input readonly se contiver um número
+        }
+     });
+
+    const inputsTip = document.querySelectorAll('#inputTip');
+    const divTip = document.getElementById('inputTips');
+    const labels = document.querySelectorAll('label');
+    let cont = 1;
+    inputsTip.forEach(input => {
+        const p = document.createElement('p');
+        divTip.appendChild(p);
+        p.innerHTML = cont + ". " + " " + input.value;
+        input.remove();
+        labels.forEach(label => {
+            label.remove();
+        });
+        
+        buttonTip.remove();
+        cont++;
+        console.log(cont);
     });
 }
 
@@ -98,7 +130,7 @@ function checkWords() {
     cols.forEach((col, x) => {
         const rows = col.querySelectorAll('.row');
         rows.forEach((row, y) => {
-            const input = row.querySelector("input");
+            const input = row.querySelector(".inputLetter");
             if (input) {
                 currentArray[x][y] = input.value === "" ? "0" : input.value;
             }
@@ -112,12 +144,12 @@ function checkWords() {
         for (let j = 0; j < initialArray[i].length; j++) {
             const input = document.getElementById(`input_${i}_${j}`);
             if (initialArray[i][j] === currentArray[i][j]) {
-                if (input) {
+                if (input && isNaN(input.value)) {
                     input.style.backgroundColor = 'green'; // Marca os inputs corretos com verde
                 }
             } else {
                 isCorrect = false;
-                if (input) {
+                if (input && isNaN(input.value)) {
                     input.style.backgroundColor = 'red'; // Reseta a cor dos inputs incorretos
                 }
             }
@@ -126,8 +158,52 @@ function checkWords() {
 
     if (isCorrect) {
         alert("A palavra está correta!");
+        const inputs = document.querySelectorAll('.inputLetter');
+        const btnReset = document.createElement('button');
+        const mainElements = document.getElementById('main-elements');
+        inputs.forEach(input => {
+            input.readOnly = true;
+        })
+        mainElements.appendChild(btnReset);
+        console.log(btnReset);
     } else {
         alert("A palavra está incorreta. Tente novamente.");
     }
 }
+
+function addTip(){
+    const inputTip = document.createElement('input');
+    const label = document.createElement('label');
+    label.innerHTML = "Insira a Dica: ";
+    inputTip.setAttribute('type', 'text');
+    inputTip.setAttribute('id', 'inputTip');
+    console.log(inputTip);
+
+    const divTip = document.getElementById('inputTips');
+    if(divTip){
+        buttonTip.remove();
+        divTip.appendChild(label);
+        divTip.appendChild(inputTip);
+        divTip.appendChild(buttonTip);
+    }
+}
+
+// function generateTip(){
+//     const inputsTip = document.querySelectorAll('#inputTip');
+//     const divTip = document.getElementById('inputTips');
+//     const labels = document.querySelectorAll('label');
+    
+//     inputsTip.forEach(input => {
+//         const p = document.createElement('p');
+//         divTip.appendChild(p);
+//         p.innerHTML = input.value;
+//         input.remove();
+
+//         labels.forEach(label => {
+//             label.remove();
+//         })
+
+//         buttonTip.remove();
+//     })
+// }
 
