@@ -347,3 +347,7 @@ input:focus {
 .tip-input:focus {
     border-color: rgb(23, 23, 114);
 }
+
+.reset-button-container {
+    margin-top: 20px;
+  }
